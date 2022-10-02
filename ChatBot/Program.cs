@@ -1,9 +1,13 @@
 using ChatBot;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using ChatBot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<TicketService>();
 
 var app = builder.Build();
 
@@ -16,6 +20,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+
+app.UseEndpoints(endpoint => { endpoint.MapControllers(); });
 
 app.UseWebSockets(new WebSocketOptions
 {
