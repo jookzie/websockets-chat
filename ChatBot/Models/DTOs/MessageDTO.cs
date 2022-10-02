@@ -16,7 +16,7 @@ public record MessageDTO
 }
 public enum MessageAction
 {
-    JOIN,
-    LEAVE,
-    SEND,
+    JOIN = 0,
+    SEND = 1,
+    LEAVE = 2,
 }
