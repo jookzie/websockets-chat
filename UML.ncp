@@ -7,7 +7,7 @@
       <Entity type="Class">
         <Name>User</Name>
         <Access>Public</Access>
-        <Location left="345" top="691" />
+        <Location left="347" top="691" />
         <Size width="163" height="162" />
         <Collapsed>False</Collapsed>
         <Member type="Property">public string FirstName { get; }</Member>
@@ -64,26 +64,27 @@
         <Location left="598" top="730" />
         <Size width="163" height="94" />
         <Collapsed>False</Collapsed>
-        <Member type="Property">public Guid ID { get; }</Member>
+        <Member type="Constructor">public Anonymous()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>Participant</Name>
         <Access>Public</Access>
-        <Location left="598" top="597" />
-        <Size width="162" height="216" />
-        <Collapsed>True</Collapsed>
+        <Location left="598" top="581" />
+        <Size width="163" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Guid ID { get; set; }</Member>
         <Modifier>Abstract</Modifier>
       </Entity>
     </Entities>
     <Relationships>
       <Relationship type="Dependency" first="0" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="3" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -91,8 +92,6 @@
         <EndMultiplicity>*</EndMultiplicity>
       </Relationship>
       <Relationship type="Dependency" first="3" second="4">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
@@ -101,6 +100,8 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="3" second="6">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -114,7 +115,7 @@
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
           <X>621</X>
-          <Y>572</Y>
+          <Y>556</Y>
         </BendPoint>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>

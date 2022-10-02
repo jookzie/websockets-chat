@@ -1,20 +1,9 @@
 using ChatBot;
-using ChatBot.Example;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddRazorPages();
-
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromSeconds(240);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
 var app = builder.Build();
 
@@ -33,19 +22,6 @@ app.UseWebSockets(new WebSocketOptions
     KeepAliveInterval = TimeSpan.FromSeconds(60),
 });
 
-//app.UseMiddleware<WebsocketHandlerMiddleware>();
 app.UseMiddleware<ConversationMiddleware>();
-
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseSession();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.MapRazorPages();
 
 app.Run();

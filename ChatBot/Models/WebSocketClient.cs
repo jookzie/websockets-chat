@@ -13,8 +13,13 @@ namespace ChatBot.Models
             Participant = participant;
             WebSocket = webSocket;
         }
+        
         public Participant Participant { get; }
+        
         public WebSocket WebSocket { get; }
+        
+        public Guid? ConversationID { get; set; }
+        
         public Task SendMessageAsync(string message)
         {
             byte[] msg = Encoding.UTF8.GetBytes(message);

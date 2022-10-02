@@ -17,7 +17,6 @@ namespace ChatBot
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
-        private static readonly List<WebSocketClient> _clients = new();
         
         public ConversationMiddleware(
             RequestDelegate next,
@@ -43,7 +42,7 @@ namespace ChatBot
             var wsClient = new WebSocketClient(new Anonymous(), webSocket);
             try
             {
-                await Handle(wsClient);
+                await HandleClient(wsClient);
             }
             catch (Exception ex)
             {
@@ -52,9 +51,9 @@ namespace ChatBot
             }
         }
 
-        private async Task Handle(WebSocketClient webSocket)
+        private async Task HandleClient(WebSocketClient webSocket)
         {
-            _clients.Add(webSocket);
+            WebSocketClientCollection.Add(webSocket);
             _logger.LogInformation($"Websocket client added.");
 
             WebSocketReceiveResult result;
@@ -65,25 +64,62 @@ namespace ChatBot
                 if (result.MessageType == WebSocketMessageType.Text && !result.CloseStatus.HasValue)
                 {
                     var msgString = Encoding.UTF8.GetString(buffer);
-                    _logger.LogInformation($"Websocket client ReceiveAsync message {msgString}.");
+                    //_logger.LogInformation($"Websocket client ReceiveAsync message {msgString}.");
                     var message = JsonConvert.DeserializeObject<MessageDTO>(msgString);
                     message.AuthorID = webSocket.Participant.ID;
-                    Broadcast(message);
+                    HandleMessage(message);
                 }
             }
             while (!result.CloseStatus.HasValue);
-            _clients.Remove(webSocket);
+            WebSocketClientCollection.Remove(webSocket);
             _logger.LogInformation($"Websocket client disconnected.");
         }
 
-        private void Broadcast(MessageDTO message)
+        private void HandleMessage(MessageDTO message)
         {
-            var client = _clients.First(c => c.Participant.ID == message.AuthorID);
-            _clients.ForEach(c =>
+            WebSocketClient? author = WebSocketClientCollection.Get(message.AuthorID);
+            if (author is null)
             {
-                c.SendMessageAsync(message.Content);
-            });
-            _logger.LogInformation($"Websocket client ID: '{message.AuthorID}' sent a message: '{message.Content}'.");
+                _logger.LogError($"Author {message.AuthorID} not found.");
+                return;
+            }
+            switch (message.Action)
+            {
+                case MessageAction.JOIN:
+                    if (!Guid.TryParse(message.Content, out Guid convID))
+                    {
+                        _logger.LogError($"Invalid conversation ID '{message.Content}'.");
+                        return;
+                    }
+                    if(author.ConversationID is not null)
+                    {
+                        if(author.ConversationID == convID)
+                        {
+                            _logger.LogWarning($"Client ID: '{author.Participant.ID}' is already in conversation ID: '{convID}'");
+                            return;
+                        }
+                        _logger.LogInformation($"Client ID: '{author.Participant.ID}' switched to conversation ID: '{convID}'");
+                    }
+                    author.ConversationID = convID;
+                    _logger.LogInformation($"Client '{author.Participant.ID} joined conversation with ID '{convID}'");
+                    break;
+                case MessageAction.SEND:
+                    if(author.ConversationID is null)
+                    {
+                        _logger.LogError($"Client '{message.AuthorID}' is not in a conversation.");
+                        return;
+                    }
+                    var clients = WebSocketClientCollection.GetByConversationID(author.ConversationID);
+                    clients.ForEach(c => c.SendMessageAsync(message.Content));
+                    _logger.LogInformation($"Websocket client ID: '{message.AuthorID}' sent a message: '{message.Content}'.");
+                    break;
+                case MessageAction.LEAVE:
+                    _logger.LogInformation($"Websocket client '{message.AuthorID}' left the room '{author.ConversationID}'.");
+                    author.ConversationID = null;
+                    break;
+                default:
+                    return;
+            }
         }
     }
 }
