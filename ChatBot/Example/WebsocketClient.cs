@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebsocktChatRoom;
+namespace ChatBot.Example;
 
 public class WebsocketClient
 {
@@ -20,9 +20,9 @@ public class WebsocketClient
     {
         byte[] msg = Encoding.UTF8.GetBytes(message);
         return WebSocket.SendAsync(
-            new ArraySegment<byte>(msg, 0, msg.Length), 
-            WebSocketMessageType.Text, 
-            true, 
+            new ArraySegment<byte>(msg, 0, msg.Length),
+            WebSocketMessageType.Text,
+            true,
             CancellationToken.None);
     }
 }

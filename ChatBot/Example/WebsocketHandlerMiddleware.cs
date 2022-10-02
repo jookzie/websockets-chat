@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebsocktChatRoom;
+namespace ChatBot.Example;
 
 public class WebsocketHandlerMiddleware
 {
@@ -27,33 +27,29 @@ public class WebsocketHandlerMiddleware
     {
         if (context.Request.Path != "/ws")
         {
-            if (context.WebSockets.IsWebSocketRequest)
-            {
-                WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                string clientId = Guid.NewGuid().ToString();
-                var wsClient = new WebsocketClient
-                {
-                    Id = clientId,
-                    WebSocket = webSocket
-                };
-                try
-                {
-                    await Handle(wsClient);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Echo websocket client {0} err .", clientId);
-                    await context.Response.WriteAsync("closed");
-                }
-            }
-            else
-            {
-                context.Response.StatusCode = 404;
-            }
-        }
-        else
-        {
             await _next(context);
+            return;
+        }
+        if (!context.WebSockets.IsWebSocketRequest)
+        {
+            context.Response.StatusCode = 404;
+            return;
+        }
+        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        string clientId = Guid.NewGuid().ToString();
+        var wsClient = new WebsocketClient
+        {
+            Id = clientId,
+            WebSocket = webSocket
+        };
+        try
+        {
+            await Handle(wsClient);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Echo websocket client {0} err .", clientId);
+            await context.Response.WriteAsync("closed");
         }
     }
 
@@ -61,7 +57,7 @@ public class WebsocketHandlerMiddleware
     {
         WebsocketClientCollection.Add(webSocket);
         _logger.LogInformation($"Websocket client added.");
-       
+
         WebSocketReceiveResult result;
         do
         {
@@ -71,7 +67,7 @@ public class WebsocketHandlerMiddleware
             {
                 var msgString = Encoding.UTF8.GetString(buffer);
                 _logger.LogInformation($"Websocket client ReceiveAsync message {msgString}.");
-                var message = JsonConvert.DeserializeObject<Message>(msgString);
+                var message = JsonConvert.DeserializeObject<WSMessage>(msgString);
                 message.SendClientId = webSocket.Id;
                 MessageRoute(message);
             }
@@ -81,7 +77,7 @@ public class WebsocketHandlerMiddleware
         _logger.LogInformation($"Websocket client closed.");
     }
 
-    private void MessageRoute(Message message)
+    private void MessageRoute(WSMessage message)
     {
         var client = WebsocketClientCollection.Get(message.SendClientId);
         switch (message.action)

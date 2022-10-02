@@ -1,6 +1,6 @@
-﻿namespace WebsocktChatRoom;
+﻿namespace ChatBot.Example;
 
-public class Message
+public class WSMessage
 {
     public string SendClientId { get; set; }
 

@@ -1,8 +1,9 @@
+using ChatBot;
+using ChatBot.Example;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using WebsocktChatRoom;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,8 @@ app.UseWebSockets(new WebSocketOptions
     KeepAliveInterval = TimeSpan.FromSeconds(60),
 });
 
-app.UseMiddleware<WebsocketHandlerMiddleware>();
+//app.UseMiddleware<WebsocketHandlerMiddleware>();
+app.UseMiddleware<ConversationMiddleware>();
 
 app.UseStaticFiles();
 
