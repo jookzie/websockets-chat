@@ -29,6 +29,12 @@ public class ErrorHandlerMiddleware
 
             switch (ex)
             {
+                case FormatException e:
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+                case ArgumentNullException e:
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
                 case UserNotFoundException e:
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;

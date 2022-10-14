@@ -23,7 +23,7 @@ public class UserListRepository : IUserRepository
         allUsers.Add(user);
         return user;
     }
-
+    
     public User GetById(Guid id) => allUsers.Find(user => user.ID == id);
     
     public User GetByEmail(string email) => allUsers.Find(user => user.Email == email);

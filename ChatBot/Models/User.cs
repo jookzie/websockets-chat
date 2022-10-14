@@ -40,9 +40,9 @@ public class User : Anonymous
         get => _password;
         private set
         {
-            if (string.IsNullOrEmpty(_password))
-                throw new ArgumentNullException(nameof(Password));
-            //plop more password validation if u want 
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentNullException("Password can`t be empty");
+            _password = value;
         }
     }
 
@@ -100,8 +100,8 @@ public class User : Anonymous
 
     public Role Role { get; }
    
-    private string _password = null;
-
+    private string _password;
+        
     private string _firstName = null!;
 
     private string _lastName = null!;

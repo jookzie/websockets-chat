@@ -1,4 +1,5 @@
 ﻿using ChatBot.Auth.Helpers;
+using ChatBot.Models;
 using ChatBot.Models.DTOs;
 using ChatBot.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -25,8 +26,8 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public ActionResult<AuthenticateRequest> Login([FromBody] AuthenticateRequest request)
     {
-        _userService.Authenticate(request);
-        return Ok(request);
+        var response = _userService.Authenticate(request);
+        return Ok(response);
     }
     
     [AllowAnonymous]
@@ -35,5 +36,13 @@ public class AuthController : ControllerBase
     {
         _userService.Register(request);
         return Ok(new {message = "User registered successfully"});
+    }
+    
+    [AllowAnonymous]
+    [HttpGet("all")]
+    public ActionResult<User> GetAll()
+    {
+        var users = _userService.GetAllUsers();
+        return Ok(users);
     }
 }

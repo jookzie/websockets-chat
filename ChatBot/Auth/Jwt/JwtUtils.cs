@@ -13,7 +13,6 @@ namespace ChatBot.Auth;
 public class JwtUtils
 {
     private readonly AppSettings _appSettings; //contains secret
-
     public JwtUtils(IOptions<AppSettings> appSettings)
     {
         _appSettings = appSettings.Value;

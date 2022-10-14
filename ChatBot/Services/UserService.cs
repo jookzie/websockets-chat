@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ChatBot.Auth;
 using ChatBot.Auth.Exception.CustomExceptions;
@@ -46,16 +47,26 @@ public class UserService
         if (_userRepository.GetAll().Any(x => x.Email == request.Email))
             throw new DuplicateEmailException("Email already exists");
         
-        _userRepository.Save(new User(
-            Guid.NewGuid(),
-            request.FirstName,
+        string password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+        var user = new User(Guid.NewGuid(), 
+            request.FirstName, 
             request.LastName,
-            BCrypt.Net.BCrypt.HashPassword(request.Password),
-            request.Email, 
-            request.Phone, 
-            (Role) Enum.Parse(typeof(Role), request.Role)));
+            password,
+            request.Email,
+            request.Phone,
+            (Role) Enum.Parse(typeof(Role), request.Role));
+        
+        _userRepository.Save(user);
+    }
+
+    public List<User> GetAllUsers()
+    {
+        return _userRepository.GetAll();
     }
 }
+
+
 
 
 

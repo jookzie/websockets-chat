@@ -5,7 +5,7 @@ namespace ChatBot.Models.Response;
 public class AuthenticateResponse
 {
     //now idk what u guys need in front end
-    //modify this class to what u need id
+    //modify this class to what u need id (service as well)
     
     public string Id { get; set; }
     public string FirstName { get; set; }
