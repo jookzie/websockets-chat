@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using ChatBot.Auth;
 using ChatBot.Auth.Helpers;
+using ChatBot.Auth.Repository;
 using ChatBot.Services;
 using Microsoft.AspNetCore.Authentication;
 
@@ -12,10 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddSingleton<TicketService>();
-builder.Services.AddSingleton<AuthenticationService>(); 
-builder.Services.AddScoped<JwtUtils>(); //inject utils
-builder.Services.AddCors(); //add cors
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings")); //configure appsettings
+builder.Services.AddSingleton<UserService>(); 
+builder.Services.AddSingleton<JwtUtils>(); //inject utils
+builder.Services.AddSingleton<IUserRepository, UserListRepository>();
+builder.Services.AddCors(); //add cors
 //builder.Services.AddControllers();
 
 var app = builder.Build();

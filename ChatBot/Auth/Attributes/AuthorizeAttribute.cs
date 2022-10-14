@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace ChatBot.Auth;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AuthorizeAttribute
+public class AuthorizeAttribute : System.Attribute
 {
     //When a controller is decorated with the [Authorize] attribute all
     //action methods are restricted to authorized requests,
