@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using ChatBot.Auth;
+using ChatBot.Auth.Exception.CustomExceptions;
 using ChatBot.Auth.Repository;
 using ChatBot.Models;
 using ChatBot.Models.DTOs;
@@ -25,7 +26,7 @@ public class UserService
         var user = _userRepository.GetByEmail(request.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
-            throw new ApplicationException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         
         var token = _jwtUtils.GenerateToken(user);
         return new AuthenticateResponse(user, token);     
@@ -43,9 +44,21 @@ public class UserService
 
     public void Register(RegisterRequest request)
     {
-        if(_userRepository.GetAll().Any(x => x.Email == request.Email))
-            throw new ApplicationException("Email already exists");
-        
-        var response = new 
+        if (_userRepository.GetAll().Any(x => x.Email == request.Email))
+            throw new DuplicateEmailException("Email already exists");
+
+        User user = new User(
+            Guid.NewGuid(),
+            request.FirstName,
+            request.LastName,
+            BCrypt.Net.BCrypt.HashPassword(request.Password),
+            request.Email, 
+            request.Phone, 
+            (Role) Enum.Parse(typeof(Role), request.Role));
+
+        _userRepository.Save(user);
     }
 }
+
+
+

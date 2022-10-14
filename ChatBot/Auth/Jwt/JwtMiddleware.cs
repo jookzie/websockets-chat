@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ChatBot.Services;
 using Microsoft.AspNetCore.Http;
@@ -23,11 +24,12 @@ public class JwtMiddleware
             .Last();
         
         //validate token
-        var userId = jwtUtils.ValidateToken(token);
+        Guid? userId = jwtUtils.ValidateToken(token);
         
-        //if token is valid, set user id to context
+        //attach user to context on successful jwt validation
+        //might break due to guid
         if(userId is not null)
-            context.Items["User"] = userService.GetUserById(userId); 
+            context.Items["User"] = userService.GetUserById(userId.Value); 
         
         await _next(context);
     }

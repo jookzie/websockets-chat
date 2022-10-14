@@ -12,4 +12,5 @@ public interface IUserRepository
     public User GetById(Guid id);
     public User GetByEmail(string email);
     public List<User> GetAll();
+    public void Save(User user);
 }

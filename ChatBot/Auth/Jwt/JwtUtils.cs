@@ -35,7 +35,8 @@ public class JwtUtils
         return tokenHandler.WriteToken(token);
     }
     
-    public int? ValidateToken(string token) //returns userId if validation is succesfull
+    //chances are that this might not work with guid
+    public Guid? ValidateToken(string token) //returns userId if validation is succesfull
     {
         if (token is null)
             return null;
@@ -56,7 +57,7 @@ public class JwtUtils
             
             var jwtToken = (JwtSecurityToken) validatedToken; 
             //returned userId from the token
-            return int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value); 
+            return Guid.Parse(jwtToken.Claims.First(x => x.Type == "id").Value); 
         }
         catch
         {

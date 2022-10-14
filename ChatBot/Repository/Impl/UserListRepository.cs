@@ -38,4 +38,9 @@ public class UserListRepository : IUserRepository
     {
         return allUsers;
     }
+
+    public void Save(User user)
+    {
+        allUsers.Add(user);
+    }
 }
