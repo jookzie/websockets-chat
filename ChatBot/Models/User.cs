@@ -7,12 +7,14 @@ public class User : Anonymous
 {
     public User(string firstName,
                 string lastName,
+                string password,
                 string email,
                 string phone,
                 Role role)
     {
         FirstName = firstName;
         LastName = lastName;
+        Password = password;
         Email = email;
         Phone = phone;
         Role = role;
@@ -20,15 +22,28 @@ public class User : Anonymous
     public User(Guid id,
                 string firstName,
                 string lastName,
+                string password,
                 string email,
                 string phone,
                 Role role) : base(id)
     {
         FirstName = firstName;
         LastName = lastName;
+        Password = password;
         Email = email;
         Phone = phone;
         Role = role;
+    }
+    
+    public string Password
+    {
+        get => _password;
+        private set
+        {
+            if (string.IsNullOrEmpty(_password))
+                throw new ArgumentNullException(nameof(Password));
+            //plop more password validation if u want 
+        }
     }
 
     public string FirstName
@@ -84,6 +99,8 @@ public class User : Anonymous
     }
 
     public Role Role { get; }
+   
+    private string _password = null;
 
     private string _firstName = null!;
 
