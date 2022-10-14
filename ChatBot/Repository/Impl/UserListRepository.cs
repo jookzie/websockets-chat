@@ -24,23 +24,12 @@ public class UserListRepository : IUserRepository
         return user;
     }
 
-    public User GetById(Guid id)
-    {
-        return allUsers.Find(user => user.ID == id);
-    }
+    public User GetById(Guid id) => allUsers.Find(user => user.ID == id);
+    
+    public User GetByEmail(string email) => allUsers.Find(user => user.Email == email);
 
-    public User GetByEmail(string email)
-    {
-        return allUsers.Find(user => user.Email == email);
-    }
+    public List<User> GetAll() => allUsers;
 
-    public List<User> GetAll()
-    {
-        return allUsers;
-    }
+    public void Save(User user) => allUsers.Add(user);
 
-    public void Save(User user)
-    {
-        allUsers.Add(user);
-    }
 }

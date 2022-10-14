@@ -35,28 +35,25 @@ public class UserService
 
     public User GetUserById(Guid userId)
     {
-        //mertan bro you know what u need to do here
         var user = _userRepository.GetById(userId);
         if(user is null)
-            throw new ApplicationException("User not found");
+            throw new UserNotFoundException("User not found");
         return user; 
     }
-
+   
     public void Register(RegisterRequest request)
     {
         if (_userRepository.GetAll().Any(x => x.Email == request.Email))
             throw new DuplicateEmailException("Email already exists");
-
-        User user = new User(
+        
+        _userRepository.Save(new User(
             Guid.NewGuid(),
             request.FirstName,
             request.LastName,
             BCrypt.Net.BCrypt.HashPassword(request.Password),
             request.Email, 
             request.Phone, 
-            (Role) Enum.Parse(typeof(Role), request.Role));
-
-        _userRepository.Save(user);
+            (Role) Enum.Parse(typeof(Role), request.Role)));
     }
 }
 

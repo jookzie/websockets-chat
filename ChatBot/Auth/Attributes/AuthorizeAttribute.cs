@@ -22,7 +22,7 @@ public class AuthorizeAttribute
         if(allowAnonymous)
             return;
         
-        //autorization 
+        //authorization
         var user = context.HttpContext.Items["User"];
         if (user is null)
             context.Result = 

@@ -23,7 +23,7 @@ public class JwtMiddleware
             .Split(" ")
             .Last();
         
-        //validate token
+        //validate token    
         Guid? userId = jwtUtils.ValidateToken(token);
         
         //attach user to context on successful jwt validation
@@ -33,5 +33,5 @@ public class JwtMiddleware
         
         await _next(context);
     }
-}
+}   
 

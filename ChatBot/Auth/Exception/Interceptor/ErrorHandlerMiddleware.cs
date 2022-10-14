@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace ChatBot.Auth;
 
-public class ExceptionConfig
+public class ErrorHandlerMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public ExceptionConfig(RequestDelegate next)
+    public ErrorHandlerMiddleware(RequestDelegate next)
     {
         _next = next;
     }
@@ -29,6 +29,9 @@ public class ExceptionConfig
 
             switch (ex)
             {
+                case UserNotFoundException e:
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
                 case DuplicateEmailException e:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
